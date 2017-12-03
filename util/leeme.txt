@@ -1,0 +1,2 @@
+1º -> Crear una base de datos llamada "api"
+2º -> Dentro de esa base de datos importar el script y se crearan las tablas
