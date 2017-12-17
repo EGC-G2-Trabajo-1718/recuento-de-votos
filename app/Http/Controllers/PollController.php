@@ -36,6 +36,26 @@ class PollController extends Controller
     }
 
 
+    public function getAllPollByUserAuthoritation($auth)
+    {
+        if($auth == null || $auth == ""){
+            abort(400, 'Bad request');
+        }else{
+            $pollsAuthuser = UserAuthPoll::where('auth_token','=',$auth)->get();
+            if($pollsAuthuser == null || count($pollsAuthuser) == 0){
+                abort(403, 'Unauthorized action.');
+            }else{
+                $poll_id=0;
+                $res = array();
+                foreach($pollsAuthuser as $key){
+                    $poll_id = $key->poll_id;
+                    array_push($res,Poll::where('poll_id','=',$poll_id)->get());
+                }
+                return response()->json($res, 200);
+            }
+        }
+    }
+
     /*public function createCategories(Request $request)
     {
         $categoria = Categories::create($request->all());
