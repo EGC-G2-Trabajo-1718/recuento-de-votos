@@ -59,7 +59,6 @@ CREATE TABLE `Poll` (
   `total_voters` int(11) NOT NULL,
   `total_votes` int(11) NOT NULL,
   `question` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `options` text COLLATE utf8_unicode_ci NOT NULL,
   `status` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
@@ -73,6 +72,7 @@ CREATE TABLE `Poll` (
 
 CREATE TABLE `User` (
   `auth_token` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -100,6 +100,7 @@ CREATE TABLE `User_auth_Poll` (
 CREATE TABLE `Vote` (
   `vote_id` int(10) UNSIGNED NOT NULL,
   `poll_id` int(10) UNSIGNED NOT NULL,
+  `nameVotation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
