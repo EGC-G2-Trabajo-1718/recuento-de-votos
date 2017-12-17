@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.7.4
--- https://www.phpmyadmin.net/
---
--- Servidor: localhost
--- Tiempo de generación: 03-12-2017 a las 19:41:07
--- Versión del servidor: 10.1.28-MariaDB
--- Versión de PHP: 7.1.11
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -33,15 +24,6 @@ CREATE TABLE `migrations` (
   `batch` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Volcado de datos para la tabla `migrations`
---
-
-INSERT INTO `migrations` (`migration`, `batch`) VALUES
-('2017_12_03_000001_create_poll_table', 1),
-('2017_12_03_000002_create_vote_table', 1),
-('2017_12_03_000003_create_user_table', 1),
-('2017_12_03_000004_create_user_auth_poll_table', 1);
 
 -- --------------------------------------------------------
 
@@ -67,12 +49,37 @@ CREATE TABLE `Poll` (
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `Poll_Option`
+--
+
+CREATE TABLE `Poll_Option` (
+  `poll_option_id` int(10) UNSIGNED NOT NULL,
+  `option` varchar(255) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+
+--
+-- Estructura de tabla para la tabla `Poll_Option_Poll`
+--
+
+CREATE TABLE `Poll_Option_Poll` (
+  `poll_option_poll_id` int(10) UNSIGNED NOT NULL,
+  `poll_id` int(10) UNSIGNED NOT NULL,
+  `poll_option_id` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+-- --------------------------------------------------------
+
+
+--
 -- Estructura de tabla para la tabla `User`
 --
 
 CREATE TABLE `User` (
   `auth_token` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -100,8 +107,7 @@ CREATE TABLE `User_auth_Poll` (
 CREATE TABLE `Vote` (
   `vote_id` int(10) UNSIGNED NOT NULL,
   `poll_id` int(10) UNSIGNED NOT NULL,
-  `nameVotation` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `type` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `poll_option_id` int(10) UNSIGNED NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -115,6 +121,20 @@ CREATE TABLE `Vote` (
 --
 ALTER TABLE `Poll`
   ADD PRIMARY KEY (`poll_id`);
+
+--
+-- Indices de la tabla `Poll_Option`
+--
+ALTER TABLE `Poll_Option`
+  ADD PRIMARY KEY (`poll_option_id`);
+
+--
+-- Indices de la tabla `Poll_Option_Poll`
+--
+ALTER TABLE `Poll_Option_Poll`
+  ADD PRIMARY KEY (`poll_option_poll_id`),
+  ADD KEY `poll_option_poll_poll_id_foreign` (`poll_id`),
+  ADD KEY `poll_option_poll_poll_option_id_foreign` (`poll_option_id`);
 
 --
 -- Indices de la tabla `User`
@@ -135,7 +155,8 @@ ALTER TABLE `User_auth_Poll`
 --
 ALTER TABLE `Vote`
   ADD PRIMARY KEY (`vote_id`),
-  ADD KEY `vote_poll_id_foreign` (`poll_id`);
+  ADD KEY `vote_poll_id_foreign` (`poll_id`),
+  ADD KEY `vote_poll_option_id_foreign` (`poll_option_id`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -145,23 +166,42 @@ ALTER TABLE `Vote`
 -- AUTO_INCREMENT de la tabla `Poll`
 --
 ALTER TABLE `Poll`
-  MODIFY `poll_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `poll_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `Poll_Option`
+--
+ALTER TABLE `Poll_Option`
+  MODIFY `poll_option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+S--
+-- AUTO_INCREMENT de la tabla `Poll_Option_Poll`
+--
+ALTER TABLE `Poll_Option_Poll`
+  MODIFY `poll_option_poll_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `User_auth_Poll`
 --
 ALTER TABLE `User_auth_Poll`
-  MODIFY `user_auth_poll_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `user_auth_poll_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `Vote`
 --
 ALTER TABLE `Vote`
-  MODIFY `vote_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `vote_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3000;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `Poll_Option_Poll`
+--
+ALTER TABLE `Poll_Option_Poll`
+  ADD CONSTRAINT `poll_option_poll_poll_id_foreign` FOREIGN KEY (`poll_id`) REFERENCES `poll` (`poll_id`),
+  ADD CONSTRAINT `poll_option_poll_poll_option_id_foreign` FOREIGN KEY (`poll_option_id`) REFERENCES `poll_option` (`poll_option_id`);
 
 --
 -- Filtros para la tabla `User_auth_Poll`
@@ -174,7 +214,8 @@ ALTER TABLE `User_auth_Poll`
 -- Filtros para la tabla `Vote`
 --
 ALTER TABLE `Vote`
-  ADD CONSTRAINT `vote_poll_id_foreign` FOREIGN KEY (`poll_id`) REFERENCES `poll` (`poll_id`);
+  ADD CONSTRAINT `vote_poll_id_foreign` FOREIGN KEY (`poll_id`) REFERENCES `poll` (`poll_id`),
+  ADD CONSTRAINT `vote_poll_option_id_foreign` FOREIGN KEY (`poll_option_id`) REFERENCES `Poll_Option` (`poll_option_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
