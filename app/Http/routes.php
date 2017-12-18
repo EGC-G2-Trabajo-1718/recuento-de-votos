@@ -17,4 +17,8 @@ $app->get('/', function() use ($app) {
 
 $app->get('/polls', 'PollController@index');
 $app->get('/polls/{id}/{auth}', 'PollController@getPollByUserAuthoritation');
+$app->get('/polls/{auth}','PollController@getAllPollByUserAuthoritation');
+$app->get('/vote/{id}/{auth}','PollController@getVotesByPoll');
+$app->get('/questionpoll/{id}/{auth}','PollController@getQuestionByPoll');
+$app->get('/optionspoll/{id}/{auth}','PollController@getOptionsByPoll');
 
