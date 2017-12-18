@@ -74,4 +74,28 @@ class PollController extends Controller
 
     }
 
+    public function getQuestionByPoll($id,$auth)
+    {
+        if($id == null || $id== "" || $auth == null || $auth == ""){
+            abort(400, 'Bad request');
+        }else{
+            $pollauthuser = UserAuthPoll::where('poll_id','=',$id)->Where('auth_token','=',$auth)->get();
+            if($pollauthuser == null || count($pollauthuser) == 0){
+                abort(403, 'Unauthorized action.');
+            }else{
+                $poll_id=0;
+                foreach($pollauthuser as $key){
+                    $poll_id = $key->poll_id;
+                }
+                $res =Poll::where('poll_id','=',$poll_id)->get();
+                $resFinal = array();
+                foreach($res as $value){
+                    array_push($resFinal,$value->question);
+                }
+                return response()->json($resFinal, 200);
+            }
+        }
+    }
+
+
 }
