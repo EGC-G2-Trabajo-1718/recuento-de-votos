@@ -174,7 +174,7 @@ ALTER TABLE `Poll`
 ALTER TABLE `Poll_Option`
   MODIFY `poll_option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
-S--
+--
 -- AUTO_INCREMENT de la tabla `Poll_Option_Poll`
 --
 ALTER TABLE `Poll_Option_Poll`
