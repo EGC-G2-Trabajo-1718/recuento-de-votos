@@ -22,8 +22,6 @@ INSERT INTO `Poll_Option` (`poll_option_id`, `option`) VALUES
 (8, 'No'),
 (9, 'Nulo'),
 (10, 'Blanco');
-<<<<<<< HEAD
-=======
 
 
 INSERT INTO `Poll_Option_Poll` (`poll_option_poll_id`, `poll_id`, `poll_option_id`) VALUES
@@ -3050,4 +3048,3 @@ INSERT INTO `Vote` (`vote_id`, `poll_id`, `poll_option_id`, `created_at`, `updat
 (2997, 2, 7, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (2998, 2, 7, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
 (2999, 2, 7, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
->>>>>>> Daniel
