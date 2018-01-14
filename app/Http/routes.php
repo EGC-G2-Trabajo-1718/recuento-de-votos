@@ -22,3 +22,7 @@ $app->get('api/optionspoll/{token_bd}/{id}/{auth}','PollController@getOptionsByP
 $app->get('api/test/optionspoll/{token_bd}/{id}/{auth}','PollControllerTest@getOptionsByPoll');
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 8d9433d63ff2833db31136a146dea7b222c8c2ee
