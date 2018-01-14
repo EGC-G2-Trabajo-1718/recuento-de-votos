@@ -29,7 +29,7 @@ before_install:
   - cd ..
   # FIN DEL DESPLIEGUE, YA SE PUEDEN REALIZAR TESTS CON LA BD
   - mysql -e 'CREATE DATABASE recuento;'
-  - mysql -u rec-user -pegc < create_database.sql
+  - mysql -uroot api < create_database.sql
 
 before_deploy:
   - chmod 600 deploy && mv deploy ~/.ssh/id_rsa
