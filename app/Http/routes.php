@@ -15,6 +15,11 @@ $app->get('/', function() use ($app) {
     return $app->welcome();
 });
 
-$app->get('/polls', 'PollController@index');
-$app->get('/polls/{id}/{auth}', 'PollController@getPollByUserAuthoritation');
+$app->get('api/vote/{token_bd}/{id}/{auth}','PollController@getVotesByPoll');
+$app->get('api/test/vote/{token_bd}/{id}/{auth}','PollControllerTest@getVotesByPoll');
+
+$app->get('api/optionspoll/{token_bd}/{id}/{auth}','PollController@getOptionsByPoll');
+$app->get('api/test/optionspoll/{token_bd}/{id}/{auth}','PollControllerTest@getOptionsByPoll');
+
+
 
