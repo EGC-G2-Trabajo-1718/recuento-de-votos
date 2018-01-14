@@ -1,17 +1,23 @@
-sudo: required
-
-language: php
+languaje:php
 
 php:
-  -
+  - 7.1.1
 
-services:
-  - docker
+sudo: required
+
+services: 
+  -mysql
+  -docker
 
 env:
-  -
+  - Laravel 5.5
 
 before_install:
+  # INSERTAR AQUÍ LÍNEA PARA DESENCRIPTAR CLAVE DE ACCESO AL SERVIDOR DE DESPLIEGUE,
+  #    PROPORCIONADA POR INTEGRACIÓN
+
+  # INICIO DE DESPLIEGUE EN UN CONTENEDOR DE LA BASE DE DATOS DEL SISTEMA DE 
+  #    VOTACIONES
   - openssl aes-256-cbc -K $encrypted_80d99b7f2682_key -iv $encrypted_80d99b7f2682_iv -in deploy.enc -out deploy -d
   - mkdir mysql_build
   - cd mysql_build
@@ -22,16 +28,23 @@ before_install:
   - docker run -d --network=dev --ip=172.18.2.2 -e MYSQL_ROOT_PASSWORD=nothing egc/mysql
   - cd ..
   # FIN DEL DESPLIEGUE, YA SE PUEDEN REALIZAR TESTS CON LA BD
+  - mysql -e CREATE DATABASE recuento
+  - mysql -uroot root < create_database.sql
 
 before_deploy:
   - chmod 600 deploy && mv deploy ~/.ssh/id_rsa
   - curl -O https://raw.githubusercontent.com/EGC-G2-Trabajo-1718/integracion/master/tools/deploy.sh
   # ADMINISTRACIÓN DE VOTACIONES: DESCOMENTAR SIGUIENTE LÍNEA
-  # - scp target/*.war deploy@egc.duckdns.org:g2/tmp/ROOT.war
+  # - scp -o StrictHostKeyChecking=no target/*.war deploy@egc.duckdns.org:g2/tmp/ROOT.war
 
 deploy:
   skip_cleanup: true
   provider: script
-  script: ssh -o StrictHostKeyChecking=no deploy@egc.duckdns.org 'bash -s' < deploy.sh recuento_votos
+  script: ssh -o StrictHostKeyChecking=no deploy@egc.duckdns.org 'bash -s' < deploy.sh recuento # INSERTAR NOMBRE DEL SUBSISTEMA ESPECIFICADO EN LA WIKI SIN LOS CARACTERES "< >"
   on:
     branch: master
+
+install:
+  - composer install
+  - php artisan serve 
+  
