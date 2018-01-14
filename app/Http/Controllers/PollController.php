@@ -1,131 +1,116 @@
 <?php
+
+
 namespace App\Http\Controllers;
+use App\EncryptUtil;
 use App\PollOptionPoll;
 use Illuminate\Http\Request;
 use App\Poll;
 use App\UserAuthPoll;
 use App\Vote;
+use App\DescryptUtil;
+
+
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Collection;
+
+
+
+
 class PollController extends Controller
 {
-    public function index()
+
+
+    public function getVotesByPoll($token_bd,$token_votacion,$token_pregunta)
     {
-        $polls = Poll::all();
-        return response()->json($polls, 200);
-    }
-    public function getPollByUserAuthoritation($id,$auth)
-    {
-       if($id == null || $id== "" || $auth == null || $auth == ""){
+
+        if($token_votacion == null || $token_votacion== "" || $token_pregunta == null || $token_pregunta == ""){
             abort(400, 'Bad request');
+            error_log("Error 400, alguna variable vacia o nula");
+
         }else{
-           $pollauthuser = UserAuthPoll::where('poll_id','=',$id)->Where('auth_token','=',$auth)->get();
-           if($pollauthuser == null || count($pollauthuser) == 0){
-               abort(403, 'Unauthorized action.');
-           }else{
-               $poll_id=0;
-               foreach($pollauthuser as $key){
-                   $poll_id = $key->poll_id;
-               }
-                $res =Poll::where('poll_id','=',$poll_id)->get();
-                return response()->json($res, 200);
-           }
-        }
-    }
-    public function getAllPollByUserAuthoritation($auth)
-    {
-        if($auth == null || $auth == ""){
-            abort(400, 'Bad request');
-        }else{
-            $pollsAuthuser = UserAuthPoll::where('auth_token','=',$auth)->get();
-            if($pollsAuthuser == null || count($pollsAuthuser) == 0){
-                abort(403, 'Unauthorized action.');
-            }else{
-                $poll_id=0;
+
+            try{
+
+                $url_api = env('URL_ALMACENAMIENTO');
+                $url_api = $url_api ."/" . $token_bd . "/" . $token_votacion . "/" . $token_pregunta;
+
+                $json = file_get_contents($url_api);
+                $obj = json_decode($json);
+                $descryptUtil = new DescryptUtil();
                 $res = array();
-                foreach($pollsAuthuser as $key){
-                    $poll_id = $key->poll_id;
-                    array_push($res,Poll::where('poll_id','=',$poll_id)->get());
+
+
+                foreach($obj as $value){
+                    array_push($res,$descryptUtil->descrypt($value->token_respuesta));
+
                 }
-                return response()->json($res, 200);
+                $resFinal = array_count_values($res);
+                $result = array("total_votes" => sizeof($res));
+
+                $encryptUtil = new EncryptUtil();
+                foreach($resFinal as $key=>$value){
+                    $result[$encryptUtil->encrypt($key)] = $value ;
+                }
+
+
+                return response()->json($result, 200);
+            }catch(Exception $e){
+                    error_log("Se ha producido un error no controlado en PollController",$e);
+                }
+
             }
+
         }
-    }
-    public function getVotesByPoll($id,$auth)
+
+
+
+    public function getOptionsByPoll($token_bd,$token_votacion,$token_pregunta)
     {
-        if($id == null || $id== "" || $auth == null || $auth == ""){
+
+        if($token_votacion == null || $token_votacion== "" || $token_pregunta == null || $token_pregunta == ""){
             abort(400, 'Bad request');
+            error_log("Error 400, alguna variable vacia o nula");
+
         }else{
-            $pollauthuser = UserAuthPoll::where('poll_id','=',$id)->Where('auth_token','=',$auth)->get();
-            if($pollauthuser == null || count($pollauthuser) == 0){
-                abort(403, 'Unauthorized action.');
-            }else{
-                $poll_id=0;
-                foreach($pollauthuser as $key){
-                    $poll_id = $key->poll_id;
+
+            try{
+                $url_api = env('URL_ALMACENAMIENTO');
+                $url_api = $url_api ."/" . $token_bd . "/" . $token_votacion . "/" . $token_pregunta;
+
+                $json = file_get_contents($url_api);
+
+
+                $obj = json_decode($json);
+                $descryptUtil = new DescryptUtil();
+                $res = array();
+
+
+                foreach($obj as $value){
+                    array_push($res,$descryptUtil->descrypt($value->token_respuesta));
+
                 }
-                //select count(poll_option_id),poll_option_id from Vote where poll_id=1 GROUP by poll_option_id
-                $votes = DB::table('Vote')->select(DB::raw('count(*) as poll_id,poll_option_id'))->where('poll_id','=',$poll_id)->groupBy('poll_option_id')->get();
-                $resFinal = array();
-                foreach($votes as $vote){
-                    $poll_option_id = $vote->poll_option_id;
-                    $count = $vote->poll_id;
-                    $res = DB::table('Poll_Option')->select(DB::raw('option'))->where('poll_option_id','=',$poll_option_id)->get();
-                    foreach($res as $value){
-                        array_push($resFinal,$value->option,$count);
-                    }
+                $resFinal = array_count_values($res);
+
+                $encryptUtil = new EncryptUtil();
+                $result = array('options');
+                foreach($resFinal as $key=>$value){
+                    array_push($result,$encryptUtil->encrypt($key));
+
                 }
-                return response()->json($resFinal, 200);
+
+
+                return response()->json($result, 200);
+            }catch(Exception $e){
+                error_log("Se ha producido un error no controlado en PollController",$e);
             }
+
         }
+
     }
-    public function getQuestionByPoll($id,$auth)
-    {
-        if($id == null || $id== "" || $auth == null || $auth == ""){
-            abort(400, 'Bad request');
-        }else{
-            $pollauthuser = UserAuthPoll::where('poll_id','=',$id)->Where('auth_token','=',$auth)->get();
-            if($pollauthuser == null || count($pollauthuser) == 0){
-                abort(403, 'Unauthorized action.');
-            }else{
-                $poll_id=0;
-                foreach($pollauthuser as $key){
-                    $poll_id = $key->poll_id;
-                }
-                $res =Poll::where('poll_id','=',$poll_id)->get();
-                $resFinal = array();
-                foreach($res as $value){
-                    array_push($resFinal,$value->question);
-                }
-                return response()->json($resFinal, 200);
-            }
-        }
-    }
-    public function getOptionsByPoll($id,$auth)
-    {
-        if($id == null || $id== "" || $auth == null || $auth == ""){
-            abort(400, 'Bad request');
-        }else{
-            $pollauthuser = UserAuthPoll::where('poll_id','=',$id)->Where('auth_token','=',$auth)->get();
-            if($pollauthuser == null || count($pollauthuser) == 0){
-                abort(403, 'Unauthorized action.');
-            }else{
-                $poll_id=0;
-                foreach($pollauthuser as $key){
-                    $poll_id = $key->poll_id;
-                }
-                $res = DB::table('Poll_Option_Poll')->select(DB::raw('poll_option_id'))->where('poll_id','=',$poll_id)->get();
-                $resFinal = array();
-                foreach($res as $value){
-                    //var_dump($value->poll_option_id);
-                    $res1 = DB::table('Poll_Option')->select(DB::raw('option'))->where('poll_option_id','=',$value->poll_option_id)->get();
-                    foreach($res1 as $value1){
-                        //var_dump($value1);
-                        array_push($resFinal,$value1);
-                    }
-                }
-                return response()->json($resFinal, 200);
-            }
-        }
-    }
+
+
+
+
 }
