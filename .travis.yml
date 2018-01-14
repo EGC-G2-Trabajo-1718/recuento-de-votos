@@ -1,13 +1,13 @@
 languaje:php
 
 php:
-  - 7.1.1
+  - 7.1
 
 sudo: required
 
 services: 
-  -mysql
-  -docker
+  - mysql
+  - docker
 
 env:
   - Laravel 5.5
