@@ -28,8 +28,8 @@ before_install:
   - docker run -d --network=dev --ip=172.18.2.2 -e MYSQL_ROOT_PASSWORD=nothing egc/mysql
   - cd ..
   # FIN DEL DESPLIEGUE, YA SE PUEDEN REALIZAR TESTS CON LA BD
-  - mysql -e 'CREATE DATABASE api;'
-  - mysql -uroot api < create_database.sql
+  # mysql -e 'CREATE DATABASE api;'
+  # mysql -uroot api < create_database.sql
 
 before_deploy:
   - chmod 600 deploy && mv deploy ~/.ssh/id_rsa
