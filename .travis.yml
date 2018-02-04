@@ -46,5 +46,6 @@ deploy:
 
 install:
   - composer install
+  - vendor/bin/phpunit
   - php artisan serve 
   
