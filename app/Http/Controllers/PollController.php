@@ -43,7 +43,7 @@ class PollController extends Controller
 
 
                 foreach($obj as $value){
-                    array_push($res,$descryptUtil->descrypt($value->token_respuesta));
+                    array_push($res,$descryptUtil->descrypt($value->token_respuesta,"Almacen de votos"));
 
                 }
                 $resFinal = array_count_values($res);
@@ -51,7 +51,7 @@ class PollController extends Controller
 
                 $encryptUtil = new EncryptUtil();
                 foreach($resFinal as $key=>$value){
-                    $result[$encryptUtil->encrypt($key)] = $value ;
+                    $result[$encryptUtil->encrypt($key,"Almacen de votos")] = $value ;
                 }
 
 
@@ -88,7 +88,7 @@ class PollController extends Controller
 
 
                 foreach($obj as $value){
-                    array_push($res,$descryptUtil->descrypt($value->token_respuesta));
+                    array_push($res,$descryptUtil->descrypt($value->token_respuesta,"Almacen de votos"));
 
                 }
                 $resFinal = array_count_values($res);
@@ -96,7 +96,7 @@ class PollController extends Controller
                 $encryptUtil = new EncryptUtil();
                 $result = array('options');
                 foreach($resFinal as $key=>$value){
-                    array_push($result,$encryptUtil->encrypt($key));
+                    array_push($result,$encryptUtil->encrypt($key),"Almacen de votos");
 
                 }
 
@@ -108,6 +108,12 @@ class PollController extends Controller
 
         }
 
+    }
+
+
+    public function testEncrypt(){
+        $descryptUtil = new DescryptUtil();
+        echo $descryptUtil->descrypt("NLpGXg7r60dD9jyxl+o6O5YAk6eAfo9MhJ+JJYlScgU=","Almacen de votos");
     }
 
 
