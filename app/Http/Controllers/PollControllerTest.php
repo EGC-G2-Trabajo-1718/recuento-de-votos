@@ -45,7 +45,7 @@ class PollControllerTest extends Controller
                 $url_api = env('URL_ALMACENAMIENTO');
                 $url_api = $url_api ."/" . $token_bd . "/" . $token_votacion . "/" . $token_pregunta;
 
-                $jsonValidate = new UtilJson();
+                //$jsonValidate = new UtilJson();
                 //$json = file_get_contents($url_api);
 
                 //s$obj = $jsonValidate->json_validate($json);
