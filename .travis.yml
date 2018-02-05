@@ -44,10 +44,17 @@ deploy:
   on:
     branch: master
 
-install:
-  - composer install
-  - php artisan serve 
+before_script:
+  - composer self-update
+  
 
 script:
-  - vendor/bin/phpunit
+  - php vendor/bin/phpunit
+
+install:
+  - composer install --no-interaction
+
+after script:
+  - php artisan serve
+
   
