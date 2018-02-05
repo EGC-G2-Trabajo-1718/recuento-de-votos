@@ -125,7 +125,7 @@ EOF;
 
     public function testgetVotesByPollPositivo1()
     {
-        print "Test Negativo";
+        print "Test Positivo";
         print "Test : Check parametros getVotesByPoll";
         $pollController = new PollControllerTest();
 
@@ -153,7 +153,7 @@ EOF;
                 }
 EOF;
         $res = $pollController->getVotesByPoll(1,2,1,$json);
-        $this->assertNotEquals(-1,$res,"El parametro token_votacion esta vacio o no se ha encontrado");
+        $this->assertNotEquals(-1,$res,"Todo correcto");
 
 
 
@@ -316,7 +316,7 @@ EOF;
 
     public function testgetVotesByPollPositivo2()
     {
-        print "Test Negativo";
+        print "Test Positivo";
         print "Test : Check parametros getOptionsByPoll";
         $pollController = new PollControllerTest();
 
