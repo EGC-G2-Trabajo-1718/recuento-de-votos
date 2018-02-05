@@ -49,7 +49,7 @@ before_script:
   
 
 script:
-  - vendor/bin/phpunit
+  - php vendor/bin/phpunit
 
 install:
   - composer install --no-interaction
