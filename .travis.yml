@@ -54,7 +54,7 @@ script:
 install:
   - composer install --no-interaction
 
-after script:
+after_script:
   - php artisan serve
 
   
