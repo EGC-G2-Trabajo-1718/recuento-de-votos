@@ -45,7 +45,6 @@ deploy:
     branch: master
 
 before_script:
-  - cp .env.travis .env
   - composer self-update
   
 
