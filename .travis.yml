@@ -48,6 +48,6 @@ install:
   - composer install
   - php artisan serve 
 
-  script:
+script:
   - ./vendor/bin/phpunit
   
