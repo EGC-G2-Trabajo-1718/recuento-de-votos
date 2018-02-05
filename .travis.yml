@@ -48,6 +48,10 @@ install:
   - composer install
   - php artisan serve 
 
-#script:
-#  - vendor/bin/phpunit
+script:
+  - vendor/bin/phpunit
+
+group: "stable",
+dist: "trusty",
+os: "linux"
   
