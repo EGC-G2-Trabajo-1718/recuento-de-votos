@@ -52,9 +52,17 @@ script:
   - php vendor/bin/phpunit
 
 install:
+<<<<<<< HEAD
   - composer install --no-interaction
 
 after script:
   - php artisan serve
 
+=======
+  - composer install
+  - php artisan serve 
+
+script:
+  - ./vendor/bin/phpunit
+>>>>>>> master
   
