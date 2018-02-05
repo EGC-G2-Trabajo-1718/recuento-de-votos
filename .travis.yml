@@ -55,6 +55,6 @@ install:
   - composer install --no-interaction
 
 after_script:
-  - php artisan serve
+  - php artisan serve --env=testing-ci --port=8000 --host=localhost &
 
   
