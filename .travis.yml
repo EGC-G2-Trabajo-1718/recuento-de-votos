@@ -44,8 +44,14 @@ deploy:
   on:
     branch: master
 
-install:
-  - composer install
+before_script:
+  - cp .env.travis .env
+  - composer self-update
+  - composer install --no-interaction
+
+script:
   - vendor/bin/phpunit
+
+install:
   - php artisan serve 
   
