@@ -51,7 +51,7 @@ install:
 script:
   - vendor/bin/phpunit
 
-group: "stable",
-dist: "trusty",
-os: "linux"
+group: stable
+dist: trusty
+os: linux
   
