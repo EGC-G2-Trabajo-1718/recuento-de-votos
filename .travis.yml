@@ -47,11 +47,12 @@ deploy:
 before_script:
   - cp .env.travis .env
   - composer self-update
-  - composer install --no-interaction
+  
 
 script:
   - vendor/bin/phpunit
 
 install:
+  - composer install --no-interaction
   - php artisan serve 
   
