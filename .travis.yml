@@ -58,8 +58,8 @@ after_script:
   - php artisan serve --env=testing-ci --port=8000 --host=localhost &
 
 after_success:
-  - docker login -e abarreraroldan@gmail.com -u ajba -p proyectoegc
-  - export REPO=ajba/proyectoegc
+  - docker login -u ajba -p proyectoegc
+  - export REPO=ajba/proyectoegc1
   - export TAG=`if [ "$TRAVIS_BRANCH" == "Jesus" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - docker build -f Dockerfile -t $REPO:$COMMIT .
   - docker tag $REPO:$COMMIT $REPO:$TAG
