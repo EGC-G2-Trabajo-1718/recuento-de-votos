@@ -44,14 +44,17 @@ deploy:
   on:
     branch: master
 
-install:
-  - composer install
-  - php artisan serve 
+before_script:
+  - composer self-update
+  
 
 script:
-  - vendor/bin/phpunit
+  - php vendor/bin/phpunit
 
-group: stable
-dist: trusty
-os: linux
+install:
+  - composer install --no-interaction
+
+after_script:
+  - php artisan serve --env=testing-ci --port=8000 --host=localhost &
+
   
