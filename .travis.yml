@@ -58,10 +58,13 @@ after_script:
   - php artisan serve --env=testing-ci --port=8000 --host=localhost &
 
 after_success:
-  - if [[ "$TRAVIS_BRANCH" == "Jesus" ]]; then
-      docker login -u ajba -p proyectoegc ;
-      make push-image ;
-    fi
+  - docker login -e abarreraroldan@gmail.com -u ajba -p proyectoegc
+  - export REPO=EGC-G2-Trabajo-1718/recuento-de-votos
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "Jesus" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+  - docker push $REPO
 
 
   
