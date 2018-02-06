@@ -25,7 +25,17 @@ class PollController extends Controller
     public function getVotesByPoll($token_bd,$token_votacion,$token_pregunta)
     {
 
-        if($token_votacion == null || $token_votacion== "" || $token_pregunta == null || $token_pregunta == ""){
+
+        if($token_votacion == null || $token_votacion== "" ) {
+            abort(400, 'Bad request');
+            error_log("Error 400, alguna variable vacia o nula");
+
+        }else if($token_bd == "" || $token_bd == null){
+            abort(400, 'Bad request');
+            error_log("Error 400, alguna variable vacia o nula");
+
+
+        }else if($token_pregunta == "" || $token_pregunta == null){
             abort(400, 'Bad request');
             error_log("Error 400, alguna variable vacia o nula");
 
@@ -36,26 +46,35 @@ class PollController extends Controller
                 $url_api = env('URL_ALMACENAMIENTO');
                 $url_api = $url_api ."/" . $token_bd . "/" . $token_votacion . "/" . $token_pregunta;
 
+
+
+
                 $json = file_get_contents($url_api);
-                $obj = json_decode($json);
-                $descryptUtil = new DescryptUtil();
-                $res = array();
+
+                if(!$this->isJSON($json)){
+                    abort(400, 'Bad request');
+                    error_log("Error en el json");
+                }else{
+
+                    $obj = json_decode($json);
+                    $descryptUtil = new DescryptUtil();
+                    $res = array();
 
 
-                foreach($obj as $value){
-                    array_push($res,$descryptUtil->descrypt($value->token_respuesta,"Almacen de votos"));
+                    foreach($obj as $value){
+                        array_push($res,$descryptUtil->descrypt($value->token_respuesta,"Almacen de votos"));
 
+                    }
+                    $resFinal = array_count_values($res);
+                    $result = array("total_votes" => sizeof($res));
+
+                    $encryptUtil = new EncryptUtil();
+                    foreach($resFinal as $key=>$value){
+                        $result[$encryptUtil->encrypt($key,"Almacen de votos")] = $value ;
+                    }
+
+                    return response()->json($result, 200);
                 }
-                $resFinal = array_count_values($res);
-                $result = array("total_votes" => sizeof($res));
-
-                $encryptUtil = new EncryptUtil();
-                foreach($resFinal as $key=>$value){
-                    $result[$encryptUtil->encrypt($key,"Almacen de votos")] = $value ;
-                }
-
-
-                return response()->json($result, 200);
             }catch(Exception $e){
                     error_log("Se ha producido un error no controlado en PollController",$e);
                 }
@@ -69,7 +88,16 @@ class PollController extends Controller
     public function getOptionsByPoll($token_bd,$token_votacion,$token_pregunta)
     {
 
-        if($token_votacion == null || $token_votacion== "" || $token_pregunta == null || $token_pregunta == ""){
+        if($token_votacion == null || $token_votacion== "" ) {
+            abort(400, 'Bad request');
+            error_log("Error 400, alguna variable vacia o nula");
+
+        }else if($token_bd == "" || $token_bd == null){
+            abort(400, 'Bad request');
+            error_log("Error 400, alguna variable vacia o nula");
+
+
+        }else if($token_pregunta == "" || $token_pregunta == null){
             abort(400, 'Bad request');
             error_log("Error 400, alguna variable vacia o nula");
 
@@ -81,27 +109,33 @@ class PollController extends Controller
 
                 $json = file_get_contents($url_api);
 
+                if(!$this->isJSON($json)){
+                    abort(400, 'Bad request');
+                    error_log("Error en el json");
+                }else {
 
-                $obj = json_decode($json);
-                $descryptUtil = new DescryptUtil();
-                $res = array();
+
+                    $obj = json_decode($json);
+                    $descryptUtil = new DescryptUtil();
+                    $res = array();
 
 
-                foreach($obj as $value){
-                    array_push($res,$descryptUtil->descrypt($value->token_respuesta,"Almacen de votos"));
+                    foreach ($obj as $value) {
+                        array_push($res, $descryptUtil->descrypt($value->token_respuesta, "Almacen de votos"));
 
+                    }
+                    $resFinal = array_count_values($res);
+
+                    $encryptUtil = new EncryptUtil();
+                    $result = array('options');
+                    foreach ($resFinal as $key => $value) {
+                        array_push($result, $encryptUtil->encrypt($key), "Almacen de votos");
+
+                    }
+
+
+                    return response()->json($result, 200);
                 }
-                $resFinal = array_count_values($res);
-
-                $encryptUtil = new EncryptUtil();
-                $result = array('options');
-                foreach($resFinal as $key=>$value){
-                    array_push($result,$encryptUtil->encrypt($key),"Almacen de votos");
-
-                }
-
-
-                return response()->json($result, 200);
             }catch(Exception $e){
                 error_log("Se ha producido un error no controlado en PollController",$e);
             }
@@ -109,14 +143,6 @@ class PollController extends Controller
         }
 
     }
-
-
-    public function testEncrypt(){
-        $descryptUtil = new DescryptUtil();
-        echo $descryptUtil->descrypt("NLpGXg7r60dD9jyxl+o6O5YAk6eAfo9MhJ+JJYlScgU=","Almacen de votos");
-    }
-
-
-
+    
 
 }
