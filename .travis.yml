@@ -59,7 +59,7 @@ after_script:
 
 after_success:
   - docker login -e abarreraroldan@gmail.com -u ajba -p proyectoegc
-  - export REPO=EGC-G2-Trabajo-1718/recuento-de-votos
+  - export REPO=ajba/proyectoegc
   - export TAG=`if [ "$TRAVIS_BRANCH" == "Jesus" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - docker build -f Dockerfile -t $REPO:$COMMIT .
   - docker tag $REPO:$COMMIT $REPO:$TAG
