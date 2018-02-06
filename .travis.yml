@@ -57,9 +57,11 @@ install:
 after_script:
   - php artisan serve --env=testing-ci --port=8000 --host=localhost &
 
-  after_success:
-  - curl -O -L https://github.com/grammarly/rocker/releases/download/0.2.2/rocker-0.2.2_linux_amd64.tar.gz
-  - tar xvfz rocker-0.2.2_linux_amd64.tar.gz
-  - ./rocker build --auth ajba:proyectoeg --push -var TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER -var COMMIT=$COMMIT
+after_success:
+  - if [[ "$TRAVIS_BRANCH" == "Jesus" ]]; then
+      docker login -u ajba -p proyectoegc ;
+      make push-image ;
+    fi
+
 
   
