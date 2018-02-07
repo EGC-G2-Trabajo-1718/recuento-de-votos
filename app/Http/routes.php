@@ -17,3 +17,5 @@ $app->get('api/test/vote/{token_bd}/{id}/{auth}','PollControllerTest@getVotesByP
 $app->get('api/optionspoll/{token_bd}/{id}/{auth}','PollController@getOptionsByPoll');
 $app->get('api/test/optionspoll/{token_bd}/{id}/{auth}','PollControllerTest@getOptionsByPoll');
 $app->get('api/test/winnerpoll/{token_bd}/{id}/{auth}','PollControllerTest@getWinnerPoll');
+
+$app->get('api/test/votespercent/{token_bd}/{id}/{auth}','PollControllerTest@getVotesPercent');

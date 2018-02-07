@@ -226,4 +226,102 @@ EOF;
         return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE) ? true : false;
     }
 
+    public function getVotesPercent($token_bd,$token_votacion,$token_pregunta)
+    {
+
+        if($token_votacion == null || $token_votacion== "" ) {
+            error_log("Error 404 , el token de votacion es nulo o no se encuentra");
+            return -1;
+
+        }else if($token_bd == "" || $token_bd == null){
+            error_log("Error 404 , el token de base de datos es nulo o no se encuentra");
+            return -1;
+
+
+        }else if($token_pregunta == "" || $token_pregunta == null){
+            error_log("Error 404 , el token de pregunta es nulo o no se encuentra");
+            return -1;
+
+        }else{
+            try{
+                $url_api = env('URL_ALMACENAMIENTO');
+                $url_api = $url_api ."/" . $token_bd . "/" . $token_votacion . "/" . $token_pregunta;
+
+                //$jsonValidate = new UtilJson();
+                //$json = file_get_contents($url_api);
+
+                //s$obj = $jsonValidate->json_validate($json);
+                //$obj = json_decode($json);
+
+                $json = <<<EOF
+
+                   {
+                      "1": {
+                          "id": "1",
+                          "token_usuario": "1",
+                          "token_pregunta": "1",
+                          "token_respuesta": "NLpGXg7r60dD9jyxl+o6O5YAk6eAfo9MhJ+JJYlScgU="
+                      },
+                      "2": {
+                          "id": "1",
+                          "token_usuario": "1",
+                          "token_pregunta": "1",
+                          "token_respuesta": "4xXyB9FApWewjQjNI4SZGWqyTEPKH7b/hSxIsCQhqrw="
+                      },
+                          "3": {
+                        "id": "1",
+                        "token_usuario": "1",
+                        "token_pregunta": "1",
+                        "token_respuesta": "NLpGXg7r60dD9jyxl+o6O5YAk6eAfo9MhJ+JJYlScgU="
+                    }
+                }
+EOF;
+
+
+
+
+                //obj = json_decode($json);
+
+                if(false){
+                    return -8;
+                }else{
+                    $descryptUtil = new DescryptUtil();
+                    $res = array();
+
+                    $obj = json_decode($json);
+
+                    foreach($obj as $value){
+                        array_push($res,$descryptUtil->descrypt($value->token_respuesta,"Almacen de votos"));
+
+                    }
+                    $resFinal = array_count_values($res);
+                    //var_dump($resFinal);
+                    $result = array("total_votes" => sizeof($res));
+
+                    $encryptUtil = new EncryptUtil();
+                    foreach($resFinal as $key=>$value){
+
+                        $value = $value . "," . ($value/sizeof($res))*100 . "%";
+                        $result[$encryptUtil->encrypt($key,"Almacen de votos")] = $value ;
+                        $totalVotos = sizeof($res);
+                        //echo ($value/sizeof($res))*100;
+                    }
+
+                    return response()->json($result, 200);
+
+                }
+
+
+            }catch(Throwable $e){
+                error_log("Ha ocurrido un error en el metodo getVotesByPoll");
+                return -1;
+            }
+
+
+
+
+        }
+
+    }
+
 }
